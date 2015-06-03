@@ -1,16 +1,16 @@
 class Warmup
- 
+
  # to test this one, you need to stub out Warmup#gets
  def gets_shout
    gets.chomp.upcase
  end
- 
+
  # for your spec for this one, pass in a plain old double
  # that can accept a #size method and return something
  def double_size(array)
    return array.size * 2
  end
- 
+
  # for this method, you want separate tests to show
  # that the string you pass in receives the #upcase!
  # method call, the #reverse! method call,
