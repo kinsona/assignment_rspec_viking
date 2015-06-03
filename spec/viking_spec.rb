@@ -174,4 +174,19 @@ describe Viking do
   end # context: when fighting
 
 
+
+  context "when killing a viking" do
+
+    describe "#check_death" do
+
+      it "raises an error upon death" do
+        dead_viking = Viking.new("Dead Sven", 100)
+        expect { dead_viking.receive_attack(150) }.to raise_error("Dead Sven has Died...")
+      end
+
+    end
+
+  end  #context: when killing
+
+
 end
