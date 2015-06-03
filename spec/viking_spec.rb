@@ -35,11 +35,7 @@ describe Viking do
 
   context "when handling weapons" do
 
-      describe "#pick_up_weapon" do
-
-      #before(:each) do
-      #  let(:viking) { Viking.new }
-      #end
+    describe "#pick_up_weapon" do
 
       it "sets weapon when picked up" do
         viking = Viking.new
