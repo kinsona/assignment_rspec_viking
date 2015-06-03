@@ -54,9 +54,10 @@ describe Viking do
         expect { viking.pick_up_weapon("fish") }.to raise_error("Can't pick up that thing")
       end
 
+
       it "replaces current weapon upon picking up a new one" do
         current_weapon = Axe.new
-        viking = Viking.new("Sven", 100, 100, current_weapon)
+        viking = Viking.new("Sven", 100, 10, current_weapon)
 
         expect(viking.weapon).to eq(current_weapon)
 
@@ -74,7 +75,7 @@ describe Viking do
 
       it "sets weapon to nil upon dropping current weapon" do
         current_weapon = Axe.new
-        viking = Viking.new("Sven", 100, 100, current_weapon)
+        viking = Viking.new("Sven", 100, 10, current_weapon)
 
         viking.drop_weapon
         expect(viking.weapon).to be_nil
@@ -83,6 +84,94 @@ describe Viking do
     end
 
   end # context: when handling weapons
+
+
+
+  context "when fighting" do
+
+    describe "#receive_attack" do
+
+      it "reduces health by proper amount when attack received" do
+        viking = Viking.new
+        current_health = viking.health
+        damage = 30
+        expected_health = current_health - 30
+
+        viking.receive_attack(damage)
+        expect(viking.health).to eq(expected_health)
+      end
+
+      it "calls #take_damage when attack received" do
+        viking = Viking.new
+        expect(viking).to receive(:take_damage)
+
+        viking.receive_attack(5)
+      end
+
+    end
+
+
+    describe "#attack" do
+
+      let(:attacker) { Viking.new } #unarmed
+      let(:target) { Viking.new }
+
+      it "causes target's health to drop" do
+        current_health = target.health
+        attacker.attack(target)
+        expect(target.health).to be < current_health
+      end
+
+
+      it "calls #take_damage on the target viking" do
+        expect(target).to receive(:take_damage)
+        attacker.attack(target)
+      end
+
+
+      it "calls #damage_with_fists if unarmed" do
+        expect(attacker).to receive(:damage_with_fists).and_return(5) # can return any number
+        attacker.attack(target)
+      end
+
+
+      it "deals damage equal to Fist multipler * strength if unarmed" do
+        strength = attacker.strength
+        fists = Fists.new
+        multipler = fists.use
+
+        expect(target).to receive(:take_damage).with(strength * multipler)
+        attacker.attack(target)
+      end
+
+
+      it "calls #damage_with_weapon if armed" do
+        armed_attacker = Viking.new("Sven", 100, 10, Axe.new)
+
+        expect(armed_attacker).to receive(:damage_with_weapon).and_return(5) # can return any number
+        armed_attacker.attack(target)
+      end
+
+
+      it "deals damage equal to Weapon multipler * strength if armed" do
+        armed_attacker = Viking.new("Sven", 100, 10, Axe.new)
+        strength = armed_attacker.strength
+        multipler = armed_attacker.weapon.use
+
+        expect(target).to receive(:take_damage).with(strength * multipler)
+        armed_attacker.attack(target)
+      end
+
+      it "uses Fists if bow equipped but zero arrows" do
+        bow_attacker = Viking.new("Sven", 100, 10, Bow.new(0))
+
+        expect(bow_attacker).to receive(:damage_with_fists).and_return(5) #can return any number
+        bow_attacker.attack(target)
+      end
+
+    end
+
+  end # context: when fighting
 
 
 end
