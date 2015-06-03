@@ -1,7 +1,7 @@
 require "warmup"
 describe Warmup do
 
-  warmupper = Warmup.new
+  let(:warmupper) { Warmup.new }
 
   describe "#gets_shout" do
 
